@@ -5,12 +5,27 @@ from .misc import LoadingBar
 
 # https://www.kaggle.com/jessevent/all-crypto-currencies
 
-def generate(input_interval, prediction_interval, set_size, categories, 
-             train_data, test_data, save=False, filename=''):
+def generate(input_interval, prediction_interval, categories, 
+             training_set_size, test_set_size, train_data, test_data, 
+             save=False, filename=''):
+    
+    training_set = generate_training_set(input_interval,prediction_interval, 
+                                         categories, training_set_size, 
+                                         train_data)
+    
+    if save:
+        pass
+    
+    return training_set
+    
+
+def generate_training_set(input_interval, prediction_interval, categories, 
+                          set_size, train_data):
     
     input_set = np.zeros((set_size, input_interval, 4), dtype='float')
     label_set = np.zeros((set_size, len(categories) + 1), dtype='int32') 
     
+    print('Parsing data file...')
     with open(train_data) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')        
         csv_list = list(csv_reader) # close the file here
@@ -59,6 +74,12 @@ def generate(input_interval, prediction_interval, set_size, categories,
         index += 1           
         lb()    
     
-    return (input_set, label_set)
+    return input_set, label_set
 
+
+# =============================================================================
+# def generate_test_set(input_interval, prediction_interval, set_size,  
+#                       train_data, test_data,)
+# =============================================================================
+    
 

@@ -77,9 +77,15 @@ def generate_training_set(input_interval, prediction_interval, categories,
     return input_set, label_set
 
 
-# =============================================================================
-# def generate_test_set(input_interval, prediction_interval, set_size,  
-#                       train_data, test_data,)
-# =============================================================================
+def generate_test_set(input_interval, prediction_interval, set_size,  
+                      train_data, test_data,):
+    pass
+
+
+def standardize(input_set):
     
+    for i in range(input_set.shape[0]):        
+        input_set[i] = (input_set[i] - np.mean(input_set[i])) / np.std(input_set[i])
+            
+    return input_set
 

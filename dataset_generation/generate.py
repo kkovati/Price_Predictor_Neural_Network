@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from copy import deepcopy
 
 from .misc import LoadingBar
 
@@ -83,6 +84,8 @@ def generate_test_set(input_interval, prediction_interval, set_size,
 
 
 def standardize(input_set):
+    
+    input_set = deepcopy(input_set)
     
     for i in range(input_set.shape[0]):        
         input_set[i] = (input_set[i] - np.mean(input_set[i])) / np.std(input_set[i])

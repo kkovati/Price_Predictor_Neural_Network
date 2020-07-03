@@ -14,10 +14,14 @@ def generate(input_interval, prediction_interval, categories,
                                          categories, training_set_size, 
                                          train_data)
     
+    input_set, label_set = training_set
+    
+    input_set = standardize(input_set)
+    
     if save:
         pass
     
-    return training_set
+    return input_set, label_set 
     
 
 def generate_training_set(input_interval, prediction_interval, categories, 
@@ -43,18 +47,34 @@ def generate_training_set(input_interval, prediction_interval, categories,
         target_day = np.random.randint(input_interval, 
                                        size - prediction_interval)
         target_crypto = csv_list[target_day][1]
+        # if the random time interval is not covering a single crypto
+        # then reject it and continue
         if (target_crypto != csv_list[target_day - input_interval + 1][1] or
             target_crypto != csv_list[target_day + prediction_interval][1]):
             continue
         
+        # TODO 
+        # !!!!!!!!
+        single_example = np.zeros((input_interval, 4), dtype='float')        
         for i in range(input_interval):
             for j in range(4):
-                input_set[index][i][j] = csv_list[target_day - input_interval + 1 + i][j + 5]            
+                single_example[i][j] = csv_list[target_day - input_interval + 1 + i][j + 5]
+         
+        # if the standard deviation of the prices in the chosen interval is
+        # zero then reject it and continue
+        if np.std(single_example) == 0:
+            continue
+         
+        for i in range(input_interval):
+            for j in range(4):
+                input_set[index][i][j] = csv_list[target_day - input_interval + 1 + i][j + 5] 
+                
+                
+                
         
         base_price = highest_price = (float)(csv_list[target_day][8]) # target day close
         
         for i in range(prediction_interval):
-
             highest_price = max(highest_price, (float)(csv_list[target_day + 1 + i][5])) # open
             highest_price = max(highest_price, (float)(csv_list[target_day + 1 + i][8])) # close
             
@@ -84,11 +104,18 @@ def generate_test_set(input_interval, prediction_interval, set_size,
 
 
 def standardize(input_set):
-    
+    print('Standardize dataset...')
     input_set = deepcopy(input_set)
     
-    for i in range(input_set.shape[0]):        
+    #np.seterr(divide='ignore')
+    
+    for i in range(input_set.shape[0]):   
+        if np.std(input_set[i]) == 0:
+            print(input_set[i])
         input_set[i] = (input_set[i] - np.mean(input_set[i])) / np.std(input_set[i])
+        
+
+        
             
     return input_set
 

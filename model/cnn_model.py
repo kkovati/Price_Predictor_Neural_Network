@@ -1,5 +1,5 @@
 from keras.layers import Input 
-from keras.layers import BatchNormalization, LayerNormalization 
+from keras.layers import BatchNormalization
 from keras.layers import Conv1D
 from keras.models import Model
 

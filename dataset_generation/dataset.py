@@ -71,9 +71,9 @@ class Dataset:
             # add to training set
             input_set[index] = target_interval
             
-            label_set[index] = self.calculate_label(categories, target_day, 
-                                                    csv_list, 
-                                                    prediction_interval)            
+            label_set[index] = self.calculate_label(categories, 
+                                                    prediction_interval, 
+                                                    target_day, csv_list)            
                 
             index += 1           
             lb()    
@@ -85,13 +85,13 @@ class Dataset:
         
         return input_set, label_set
     
-    def calculate_label(self, categories, target_day, csv_list, 
-                        prediction_interval):
+    def calculate_label(self, categories, prediction_interval, target_day, 
+                        csv_list):
         
         label = np.zeros((len(categories) + 1), dtype='int32') 
         
-        # base_price is the target day close     
-        base_price = highest_price = (float)(csv_list[target_day][8]) 
+        # base_price is the target day close price  
+        base_price = highest_price = (float)(csv_list[target_day][8])
         
         # search highest price in open and close prices of the prediction
         # interval days
@@ -118,12 +118,8 @@ class Dataset:
         if not set_category:
             label[0] = 1         
             
-        return label            
-            
-    
-    def get_training_set(self):
-        return self.input_set, self.label_set
-        pass
+        return label     
+
     
     def generate_test_set(self, set_size, data):
         
@@ -188,6 +184,7 @@ class Dataset:
     
         """
         print('Standardize dataset...')
+        # same mean and variance must be used for 
         input_set = deepcopy(input_set)    
         for i in range(input_set.shape[0]):   
             if np.std(input_set[i]) == 0:

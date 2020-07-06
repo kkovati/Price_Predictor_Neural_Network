@@ -8,7 +8,8 @@ if __name__ == '__main__':
     
     layer_dict = {1: 12, 3: 14, 5: 16}
     
-    incept_layer = InceptionLayer(layer_dict, name='test_layer')
+    incept_layer = InceptionLayer(layer_dict, activation='relu', 
+                                  name='test_layer')
     
     X_input = Input((30, 4))    
     print('Input shape:', X_input.shape)

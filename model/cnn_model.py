@@ -10,12 +10,11 @@ def cnn_model(input_shape):
     
     print(X_input.shape)
     
-    X = LayerNormalization(axis=1)
+
     
     X = Conv1D(filters=32, 
-               kernel_size=2,
-               strides=1,
-               #padding=,
+               kernel_size=3,
+               padding='same',
                activation='relu',
                use_bias=True,
                name = 'conv0')(X_input)
@@ -44,8 +43,10 @@ def norm_model(input_shape):
     
     print(X_input.shape)
         
-    X = LayerNormalization(axis=1)
-    
-model = norm_model((6,4))
 
-model.summary()
+    
+# =============================================================================
+# model = cnn_model((6,4))
+# 
+# model.summary()
+# =============================================================================

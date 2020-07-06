@@ -1,21 +1,27 @@
-from keras.layers import Conv1D
+from keras.layers import Conv1D, Concatenate
+
 
 class InceptionLayer:
     
-    def __init__(self, 1_filter):
-        conv_1 = Conv1D(filters=32, 
-                        kernel_size=1,
-                        padding='same',
-                        activation='relu',
-                        use_bias=True,
-                        name = 'conv0??')
+    def __init__(self, layer_dict, name):
         
-        conv_3 = Conv1D(filters=32, 
-                        kernel_size=3,
-                        padding='same',
-                        activation='relu',
-                        use_bias=True,
-                        name = 'conv0??')
+        self.layers = []        
+        
+        for kernel_size, filters in layer_dict.items():
+            layer = Conv1D(filters=filters, 
+                           kernel_size=kernel_size,
+                           padding='same',
+                           activation='relu',
+                           use_bias=True,
+                           name=name+'_conv_'+str(kernel_size))            
+            self.layers.append(layer)        
+        
+        self.concat = Concatenate(axis=2, name=name+'_concat')
 
     def __call__(self, X_input):
-        pass
+        
+        X_outputs = [layer(X_input) for layer in self.layers]        
+            
+        return self.concat(X_outputs)
+
+

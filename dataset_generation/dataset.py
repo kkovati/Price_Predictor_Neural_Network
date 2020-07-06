@@ -11,15 +11,11 @@ from .misc import LoadingBar
 
 class Dataset:    
     
-    def __init__(self):
-        self.input_interval = 0
-        self.prediction_interval = 0
-        self.categories = []
+    def __init__(self, input_interval, prediction_interval, categories):
+        self.input_interval = input_interval
+        self.prediction_interval = prediction_interval
+        self.categories = categories
     
-# =============================================================================
-#         input_interval, prediction_interval, categories, 
-#                  training_set_size, test_set_size, train_data, test_data
-# =============================================================================
 
     def parse_csv(self, filename):
         print('Parsing', filename)
@@ -31,20 +27,17 @@ class Dataset:
             return csv_list
 
 
-    def generate_training_set(self, input_interval, prediction_interval, 
-                              categories, set_size, train_data):
+    def generate_training_set(self, set_size, data):
         
-        if input_interval <= 0 or prediction_interval <= 0:
-            raise Exception('Arguments input_interval and prediction_interval must be greater then 0')
-        
-        self.input_interval = input_interval
-        self.prediction_interval = prediction_interval
-        self.categories = categories
+        # shorten variable names
+        input_interval = self.input_interval
+        prediction_interval = self.prediction_interval
+        categories = self.categories
         
         input_set = np.zeros((set_size, input_interval, 4), dtype='float')
         label_set = np.zeros((set_size, len(categories) + 1), dtype='int32') 
         
-        csv_list = self.parse_csv(train_data)
+        csv_list = self.parse_csv(data)
            
         size = len(csv_list)    
         index = 0
@@ -85,9 +78,10 @@ class Dataset:
             index += 1           
             lb()    
         
+        input_set = self.standardize(input_set)
+        
         self.training_input_set = input_set
         self.training_label_set = label_set
-        self.training_set_ready = True
         
         return input_set, label_set
     
@@ -131,11 +125,8 @@ class Dataset:
         return self.input_set, self.label_set
         pass
     
-    def generate_test_set(self, set_size, test_data):
+    def generate_test_set(self, set_size, data):
         
-        if not self.training_set_ready:
-            raise Exception('Must run generate_train_set_first')
-            
         input_interval = self.input_interval
         prediction_interval = self.prediction_interval
         categories = self.categories 

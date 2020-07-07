@@ -1,9 +1,6 @@
 import csv
 from copy import deepcopy
-from datetime import datetime
 import numpy as np
-from plotly.graph_objects import Candlestick, Figure
-from plotly.offline import plot
 
 from .misc import LoadingBar
 
@@ -22,6 +19,10 @@ class Dataset:
         input_set, label_set = self.extract_set(csv_list, set_size)        
         
         input_set = self.standardize_input(input_set)
+        
+        self.count_label_category(label_set)
+        
+        return input_set, label_set
 
     def parse_csv(self, filename):
         print('Parsing', filename)
@@ -39,7 +40,7 @@ class Dataset:
         max_size = (list_size - self.prediction_interval - self.input_interval 
                     + 1)
         if set_size > max_size or set_size == -1: 
-            print('Maximum test set size is:', max_size)
+            print('Set size:', max_size)
             set_size = max_size
             start_range = 0
         else:
@@ -143,22 +144,19 @@ class Dataset:
         for i in range(input_set.shape[0]):   
             if np.std(input_set[i]) == 0:
                 print(input_set[i])
-            input_set[i] = (input_set[i] - np.mean(input_set[i])) / np.std(input_set[i])            
+            input_set[i] = ((input_set[i] - np.mean(input_set[i])) / 
+                            np.std(input_set[i]))
         return input_set
 
-
-    def plot_candlestick(self, single_input):    
-        open_ = single_input[:,0]
-        high_ = single_input[:,1]
-        low_ = single_input[:,2]
-        close_ = single_input[:,3]
-    
-        dates = list(range(single_input.shape[0]))
+    def count_label_category(self, label_set):        
+        sum_label = np.zeros((len(self.categories) + 1), dtype='int32')
         
-        fig = Figure(data=[Candlestick(x=dates,open=open_, high=high_, low=low_, 
-                                       close=close_)])
-    
-        plot(fig)
+        for label in label_set:
+            sum_label += label
+          
+        print('Label distribution:', sum_label)
+        
+        return sum_label        
 
 
     def save(self, filename):

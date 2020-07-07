@@ -10,11 +10,14 @@ dataset = Dataset(input_interval=30,
 train_data = 'dataset_generation/data/crypto-markets_ONLY_BTC.csv'
 train_set = dataset.generate_set(filename=train_data)
 
+
 test_data = 'dataset_generation/data/crypto-markets_ONLY_BTC.csv'
-test_set = dataset.generate_test_set(set_size=1000, data=test_data)
+test_set = dataset.generate_set(filename=test_data)
 
        
 train_input_set, train_label_set = train_set
+
+
 
 model = model_2(4)
 

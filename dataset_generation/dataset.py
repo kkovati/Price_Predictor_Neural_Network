@@ -34,13 +34,12 @@ class Dataset:
             return csv_list
 
 
-    def extract_set(self, csv_list, set_size=-1):  
-        
+    def extract_set(self, csv_list, set_size=-1): 
         list_size = len(csv_list)  
         max_size = (list_size - self.prediction_interval - self.input_interval 
                     + 1)
         if set_size > max_size or set_size == -1: 
-            print('Set size:', max_size)
+            print('Checked exmaples:', max_size)
             set_size = max_size
             start_range = 0
         else:
@@ -51,13 +50,13 @@ class Dataset:
                              dtype='float')
         label_set = np.zeros((set_size, len(self.categories) + 1), 
                              dtype='int32')
-        
-        lb = LoadingBar(size=set_size, message='Generating dataset')
-        
+
+        lb = LoadingBar(size=set_size, message='Generating dataset')        
         # One iteration samples a next time interval from csv_list
         # If the sample is valid then it is added to the train_set
+        index = 0
         end_range = start_range + set_size
-        for i, start_day in enumerate(range(start_range, end_range)):
+        for start_day in range(start_range, end_range):            
             # start_day - start day of the input interval
             # curr_day - end day of the input interval, 
             #            when the prediction is done 
@@ -77,17 +76,24 @@ class Dataset:
             
             # If the standard deviation of the prices in the chosen interval 
             # is zero then reject this example and continue
-            if np.std(input_interval) == 0:
-                raise Exception('Standard deviation of test set example is 0')  
+            if np.std(input_interval) == 0:  
                 continue             
 
             # Add to training set
-            input_set[i] = input_interval            
-            label_set[i] = self.calculate_label(curr_day, csv_list)  
-           
-            lb() # Loading bar update 
+            input_set[index] = input_interval            
+            label_set[index] = self.calculate_label(curr_day, csv_list)  
+            
+            index += 1
+            lb() # Loading bar update
+         
+        # Delete the unused part of the dataset lists
+        input_set = np.delete(input_set, np.s_[index:], axis=0)
+        label_set = np.delete(label_set, np.s_[index:], axis=0)
         
+        print('Dataset size:', input_set.shape[0])
+            
         return input_set, label_set    
+    
     
     def calculate_label(self, curr_day, csv_list):        
         label = np.zeros((len(self.categories) + 1), dtype='int32') 
@@ -139,14 +145,14 @@ class Dataset:
             DESCRIPTION.
     
         """
-        print('Standardize dataset') 
+        lb = LoadingBar(size=input_set.shape[0], message='Standardize dataset')
         input_set = deepcopy(input_set)    
-        for i in range(input_set.shape[0]):   
-            if np.std(input_set[i]) == 0:
-                print(input_set[i])
+        for i in range(input_set.shape[0]):
             input_set[i] = ((input_set[i] - np.mean(input_set[i])) / 
                             np.std(input_set[i]))
+            lb() # Loading bar update
         return input_set
+    
 
     def count_label_category(self, label_set):        
         sum_label = np.zeros((len(self.categories) + 1), dtype='int32')

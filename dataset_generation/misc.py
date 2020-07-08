@@ -9,9 +9,9 @@ class LoadingBar:
         self.bar_length = 30
         self.index = 0
         
-    def __call__(self):        
+    def __call__(self): 
         self.index += 1 
-        if self.index % (self.size / 100) != 0:
+        if self.index % (self.size / 100) > 1:
             return
         i = self.index
         line = (str(int(i * 100 / self.size)) + '%' + ' ' + self.message +
@@ -22,4 +22,3 @@ class LoadingBar:
         if i == self.size:
             print('')
   
-    

@@ -7,13 +7,13 @@ saves them into 'dataset_generation/datasets' folder
 """
 if __name__ == '__main__':
     
-    input_interval=60
-    prediction_interval=3                     
-    categories=[1,2.5,500]    
+    input_interval=3
+    prediction_interval=2
+    categories=[1,2.5,5]    
     
     dataset = Dataset(input_interval, prediction_interval, categories)
     
-    train_data = '../dataset_generation/data/crypto-markets_NO_BTC.csv'
+    train_data = '../dataset_generation/data/crypto-markets_ONLY_BTC.csv'
     train_set = dataset.generate_set(filename=train_data)
     
     test_data = '../dataset_generation/data/crypto-markets_ONLY_BTC.csv'

@@ -165,5 +165,12 @@ class Dataset:
         return sum_label        
 
 
-    def save(self, filename):
-        pass
+    def save(self, filename, input_set, label_set):
+        np.savez_compressed(filename, input_set=input_set, label_set=label_set)    
+        
+        
+    def load(self, filename):
+        data = np.load(filename)
+        return data['input_set'], data['label_set']    
+    
+    

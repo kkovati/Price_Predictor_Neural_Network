@@ -1,5 +1,5 @@
 from dataset_generation import Dataset
-from model import model_1, model_2
+#from model import model_1, model_2
 
 
 
@@ -15,7 +15,13 @@ train_data = 'dataset_generation/data/crypto-markets_ONLY_BTC.csv'
 train_set = dataset.generate_set(filename=train_data)
 train_input_set, train_label_set = train_set
 
+print(train_input_set[0])
 
+dataset.save('asdasd.npz', train_input_set, train_label_set)
+
+train_input_set, train_label_set = dataset.load('asdasd.npz')
+
+print(train_input_set[0])
 
 # =============================================================================
 # models = [model_1(category_count),

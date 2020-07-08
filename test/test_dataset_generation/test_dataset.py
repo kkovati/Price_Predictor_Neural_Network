@@ -88,8 +88,8 @@ class TestDataset(unittest.TestCase):
         
         assert all(sum_label == [0,0,1,1])
         
-        print(sum_label)
-        
+        print(sum_label)        
+
         
 if __name__ == '__main__':
     unittest.main()        

@@ -8,65 +8,78 @@ from dataset_generation import Dataset
 class PredictionPlotter:
     
     
-    def __init__(self, model):
+    def __init__(self, model, filename, start=0, end=-1):
         self.model = model
-        self.dataset = Dataset(0,0,[]) # dummy values
+                
+        prediction_interval = model.layers[0].input_shape[1]
         
-        self.prediction_interval = model.layers[0].input_shape[1]
+        analyzed_interval, predictions = self.make_prediction(model, filename, prediction_interval, start, end)
+        
+        print(analyzed_interval)
+        
+        self.plot(analyzed_interval, predictions)
 
     
-    def do_stuff(self, filename, start=0, end=-1):
+    def make_prediction(self, model, filename, prediction_interval, start=0, 
+                        end=-1):
         
-        csv_list = self.dataset.parse_csv(filename) 
+        dataset = Dataset(0,0,[]) # dummy values for init
+        csv_list = dataset.parse_csv(filename) 
         
-        if start < self.prediction_interval:
-            start = self.prediction_interval
+        if start < prediction_interval:
+            start = prediction_interval
             
         if end >= len(csv_list):
             end = -1
         elif end < start:
             end = start        
         
-        analyzed_interval = csv_list[start - self.prediction_interval:end, 3:9]
+        analyzed_interval = csv_list[start - prediction_interval:end, 3:9]
         analyzed_interval = np.delete(analyzed_interval, 1, axis=1)
 
-        print(analyzed_interval)
-
-        predictions = np.zeros((end + self.prediction_interval - start), 
+        predictions = np.zeros((end + prediction_interval - start), 
                                dtype='int32')
 
-        for i, day in enumerate(analyzed_interval):            
-            if i >= self.prediction_interval:
-                input_start = i - self.prediction_interval
-                input_days = analyzed_interval[input_start:i, 1:5]
-                input_days = input_days.astype(dtype='float')
-                input_days = np.expand_dims(input_days, axis=0)
-
-                single_prediction = self.model.predict(input_days)
-                print(single_prediction)
-                predictions[i] = np.argmax(single_prediction)
+        for i, _ in enumerate(analyzed_interval):            
+            if i >= prediction_interval:
+                input_start = i - prediction_interval
+                input_example = analyzed_interval[input_start:i, 1:5]
+                input_example = input_example.astype(dtype='float')
+                input_example = np.expand_dims(input_example, axis=0)
                 
+                input_example = ((input_example - np.mean(input_example)) / 
+                                 np.std(input_example))
+                
+                single_prediction = model.predict(input_example)
+                predictions[i] = np.argmax(single_prediction)                
             
-        analyzed_interval = analyzed_interval[self.prediction_interval:]
-        predictions = predictions[self.prediction_interval:]
+        analyzed_interval = analyzed_interval[prediction_interval:]
+        predictions = predictions[prediction_interval:]
     
-        print(analyzed_interval)
-        print(predictions)
+        return analyzed_interval, predictions
         
         
-# =============================================================================
-#     def plot(self):
-#         
-#         open_ = single_input[:,0]
-#         high_ = single_input[:,1]
-#         low_ = single_input[:,2]
-#         close_ = single_input[:,3]
-#     
-#         dates = list(range(single_input.shape[0]))
-#         
-#         fig = Figure(data=[Candlestick(x=dates,open=open_, high=high_, low=low_, 
-#                                        close=close_)])
-#     
-#         plot(fig)
-# =============================================================================
+    def plot(self, analyzed_interval, predictions):
+        
+        dates = analyzed_interval[:,0]        
+        open_ = analyzed_interval[:,1]
+        high_ = analyzed_interval[:,2]
+        low_ = analyzed_interval[:,3]
+        close_ = analyzed_interval[:,4]
+    
+        
+        
+        fig = Figure(data=[Candlestick(x=dates, open=open_, high=high_, low=low_, 
+                                       close=close_)])
+        
+        fig.update_layout(title='The Great Recession',
+                          yaxis_title='AAPL Stock',
+                          shapes = [dict(x0='2013-05-09', x1='2013-05-09', y0=0, y1=1, xref='x', yref='paper',line_width=2)],
+                          annotations=[dict(x='2013-05-09', y=0.05, xref='x', yref='paper',showarrow=False, xanchor='left', text='Increase Period Begins')])
+        
+        fig.add_scatter(y=[2, 3.5, 4], mode="markers",
+                        marker=dict(size=20, color="MediumPurple"),
+                        name="c", row=1, col=2)
+    
+        plot(fig)
         

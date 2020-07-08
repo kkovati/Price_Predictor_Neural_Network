@@ -1,5 +1,5 @@
 from keras.layers import Activation, BatchNormalization, Conv1D, Dense
-from keras.layers import Flatten, MaxPooling1D
+from keras.layers import Flatten, Input, MaxPooling1D
 from keras.models import Sequential
 
 from model.inception_layer import InceptionLayer
@@ -7,6 +7,10 @@ from model.inception_layer import InceptionLayer
 
 def model_1(category_count):    
     model = Sequential(name='model_1')
+    
+    #model.add(Input(shape=(30,4)))
+    
+    
     
     # inception layer    
     layer_dict = {1:10, 3:10, 5:10, 7:10}    
@@ -35,3 +39,4 @@ def model_1(category_count):
     model.add(Dense(category_count, activation='softmax', name='4_softmax'))
     
     return model
+

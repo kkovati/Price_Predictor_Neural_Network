@@ -10,10 +10,14 @@ class Dataset:
     def __init__(self, input_interval, prediction_interval, categories):
         self.input_interval = input_interval
         self.prediction_interval = prediction_interval
+        categories.sort(reverse=True)
         self.categories = categories
         
     
-    def generate_set(self, filename, set_size=-1):        
+    def generate_set(self, filename, set_size=-1):
+        """
+        Generates a dataset from a .csv file
+        """        
         csv_list = self.parse_csv(filename)
         
         input_set, label_set = self.extract_set(csv_list, set_size)        
@@ -25,6 +29,9 @@ class Dataset:
         return input_set, label_set
 
     def parse_csv(self, filename):
+        """
+        Returns a .csv file as a numpy list
+        """
         print('Parsing', filename)
         with open(filename) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')        
@@ -35,11 +42,18 @@ class Dataset:
 
 
     def extract_set(self, csv_list, set_size=-1): 
+        """
+        Creates a dataset of inputs and labels from a raw list of the .csv
+        file
+        Returns
+        input_set: np.ndarray - input of the dataset, NOT normalized 
+        label_set: np.ndarray - calculated labels
+        """
         list_size = len(csv_list)  
         max_size = (list_size - self.prediction_interval - self.input_interval 
                     + 1)
         if set_size > max_size or set_size == -1: 
-            print('Checked exmaples:', max_size)
+            print('Check', max_size, 'examples')
             set_size = max_size
             start_range = 0
         else:
@@ -56,7 +70,8 @@ class Dataset:
         # If the sample is valid then it is added to the train_set
         index = 0
         end_range = start_range + set_size
-        for start_day in range(start_range, end_range):            
+        for start_day in range(start_range, end_range): 
+            lb() # Loading bar update
             # start_day - start day of the input interval
             # curr_day - end day of the input interval, 
             #            when the prediction is done 
@@ -83,9 +98,9 @@ class Dataset:
             input_set[index] = input_interval            
             label_set[index] = self.calculate_label(curr_day, csv_list)  
             
-            index += 1
-            lb() # Loading bar update
+            index += 1            
          
+        lb(end=True) # Loading bar terminate
         # Delete the unused part of the dataset lists
         input_set = np.delete(input_set, np.s_[index:], axis=0)
         label_set = np.delete(label_set, np.s_[index:], axis=0)
@@ -95,7 +110,11 @@ class Dataset:
         return input_set, label_set    
     
     
-    def calculate_label(self, curr_day, csv_list):        
+    def calculate_label(self, curr_day, csv_list):  
+        """
+        Calculates max relative price increase in the prediction interval 
+        days from current day and creates label
+        """
         label = np.zeros((len(self.categories) + 1), dtype='int32') 
         
         # base_price - the current day's close price         
@@ -111,11 +130,9 @@ class Dataset:
         # Ratio of the highest opening or closing prices of the prediciton 
         # interval days and the target day's close price (>1)
         increment_rate = (float)(highest_price) / (float)(base_price) 
-        
-        self.categories.sort(reverse=True)
+                
+        # Find which category the highest price falls in
         set_category = False
-        
-        # Find which category the highest price fits in
         for i, c in enumerate(self.categories):
             if increment_rate >= 1 + (c / 100):
                 label[len(self.categories) - i] = 1
@@ -132,18 +149,7 @@ class Dataset:
     def standardize_input(self, input_set):
         """
         Standardize every training example's input separately by moving the
-        mean to 0 and scaling the standard deviation to 1
-    
-        Parameters
-        ----------
-        input_set : np.ndarray(3D) - 
-            DESCRIPTION.
-    
-        Returns
-        -------
-        input_set : TYPE
-            DESCRIPTION.
-    
+        mean to 0 and scaling the standard deviation to 1    
         """
         lb = LoadingBar(size=input_set.shape[0], message='Standardize dataset')
         input_set = deepcopy(input_set)    
@@ -151,10 +157,14 @@ class Dataset:
             input_set[i] = ((input_set[i] - np.mean(input_set[i])) / 
                             np.std(input_set[i]))
             lb() # Loading bar update
+        lb(end=True) # Loading bar terminate
         return input_set
     
 
-    def count_label_category(self, label_set):        
+    def count_label_category(self, label_set): 
+        """
+        Counts how many examples falls into each category
+        """
         sum_label = np.zeros((len(self.categories) + 1), dtype='int32')
         
         for label in label_set:
@@ -165,12 +175,26 @@ class Dataset:
         return sum_label        
 
 
-    def save(self, filename, input_set, label_set):
-        np.savez_compressed(filename, input_set=input_set, label_set=label_set)    
+    def save(self, filename, train_set, test_set):
+        """
+        Save train and test sets into a compressed .npz file
+        """
+        train_input_set, train_label_set = train_set
+        test_input_set, test_label_set = test_set
+        np.savez_compressed(filename, train_input_set=train_input_set, 
+                            train_label_set=train_label_set, 
+                            test_input_set=test_input_set, 
+                            test_label_set=test_label_set)    
         
-        
-    def load(self, filename):
+     
+    @classmethod
+    def load(cls, filename):
+        """
+        Loads train and test sets from a compressed .npz file
+        """
+        print('Loading', filename)
         data = np.load(filename)
-        return data['input_set'], data['label_set']    
+        return ((data['train_input_set'], data['train_label_set']), 
+                (data['test_input_set'], data['test_label_set']))
     
     

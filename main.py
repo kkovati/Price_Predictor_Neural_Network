@@ -3,25 +3,22 @@ from dataset_generation import Dataset
 
 
 
-input_interval=30
-prediction_interval=2                     
-categories=[1,2.5,5]
-category_count = len(categories) + 1
+"""
+This script ....
+"""
+if __name__ == '__main__':
 
+    dataset_name = 'dataset_generation/datasets/IN60PRED3CAT[1,2.5,5].npz'
 
-dataset = Dataset(input_interval, prediction_interval, categories)
+    train_set, test_set = Dataset.load(dataset_name)
+    
+    print(train_set[0].shape)
+    print(train_set[0][0][0])
+    print(test_set[0].shape)
+    print(test_set[0][0][0])
 
-train_data = 'dataset_generation/data/crypto-markets_ONLY_BTC.csv'
-train_set = dataset.generate_set(filename=train_data)
-train_input_set, train_label_set = train_set
+# SHUFFLE training set
 
-print(train_input_set[0])
-
-dataset.save('asdasd.npz', train_input_set, train_label_set)
-
-train_input_set, train_label_set = dataset.load('asdasd.npz')
-
-print(train_input_set[0])
 
 # =============================================================================
 # models = [model_1(category_count),

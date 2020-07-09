@@ -27,7 +27,7 @@ if __name__ == '__main__':
     model.fit(train_input_set, train_label_set, batch_size=256, epochs=1)
     
     filename='../../dataset_generation/data/crypto-markets_ONLY_BTC.csv'
-    pred_plot = PredictionPlotter(model, filename, start=4, end=6)
+    pred_plot = PredictionPlotter(model, filename, start=4, end=16)
     
     
     

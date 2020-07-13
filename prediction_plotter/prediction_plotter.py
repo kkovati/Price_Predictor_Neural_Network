@@ -1,38 +1,34 @@
 import numpy as np
-from datetime import datetime
 from plotly.graph_objects import Candlestick, Figure
 from plotly.offline import plot
 
-from dataset_generation import DatasetManager
+from dataset_generation import Dataset
 
 class PredictionPlotter:
     
     
-    def __init__(self, model, filename, categories, prediction_interval, 
-                 start=0, end=-1):
+    def __init__(self, model, filename, start=0, end=-1):
         
         self.model = model
                 
-        input_interval = model.layers[0].input_shape[1]
+        analyzed_interval, predictions = self.make_predictions(model, filename, 
+                                                               start, end)    
         
-        analyzed_interval, predictions = self.make_predictions(model, filename, input_interval, start, end)    
-        
-        figure = self.init_figure(analyzed_interval, predictions, 
-                                  prediction_interval, categories)
+        figure = self.init_figure(analyzed_interval, predictions, model)
         
         self.visualize_predictions(figure, analyzed_interval, predictions, 
-                                   prediction_interval, categories)
+                                   model)
        
         plot(figure)        
 
     
-    def make_predictions(self, model, filename, input_interval, start=0, 
-                         end=-1):
+    def make_predictions(self, model, filename, start=0, end=-1):
         
-        dm = DatasetManager(0,0,[]) # dummy values for init
+        dm = Dataset(0,0,[]) # dummy values for init
         csv_list = dm.parse_csv(filename) 
         
-        if start < input_interval:
+        input_interval = model.input_interval        
+        if start < input_interval and start > 0:
             start = input_interval
             
         if end >= len(csv_list):
@@ -71,11 +67,13 @@ class PredictionPlotter:
         return analyzed_interval, predictions
         
         
-    def init_figure(self, analyzed_interval, predictions, prediction_interval, categories):
+    def init_figure(self, analyzed_interval, predictions, model):
     
     # https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html#plotly.graph_objects.Figure.update_layout
     # https://plotly.com/python/candlestick-charts/
     # https://plotly.com/python/shapes/
+    
+        print(analyzed_interval[:,0])
     
         candlestick = Candlestick(x=analyzed_interval[:,0], 
                                   open=analyzed_interval[:,1], 
@@ -85,14 +83,19 @@ class PredictionPlotter:
         
         figure = Figure(data=[candlestick])
         
-        title = 'Predictions for the next ' + str(prediction_interval) + ' days'
+        title = ('Predictions for the next ' + str(model.prediction_interval) + 
+                 ' days')
         figure.update_layout(title=title, yaxis_title='Price')
         
         return figure        
         
         
     def visualize_predictions(self, figure, analyzed_interval, predictions, 
-                              prediction_interval, categories):
+                              model):
+        
+        prediction_interval = model.prediction_interval
+        categories = model.categories
+        categories.sort()
         
         for i, prediction in enumerate(predictions):            
             # do not draw those predictions which cannot be verified

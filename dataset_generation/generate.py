@@ -10,9 +10,9 @@ if __name__ == '__main__':
     
     input_interval=60
     prediction_interval=2
-    categories=[200]   
+    categories=[1,2,3]   
     
-    train_data = '../dataset_generation/data_csv/crypto-markets_ONLY_BTC.csv'
+    train_data = '../dataset_generation/data_csv/crypto-markets_NO_BTC.csv'
     test_data = '../dataset_generation/data_csv/crypto-markets_ONLY_BTC.csv'
     
     dataset = Dataset(input_interval, prediction_interval, categories)

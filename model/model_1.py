@@ -5,13 +5,14 @@ from keras.models import Sequential
 from model.inception_layer import InceptionLayer
 
 
-def model_1(category_count):    
-    model = Sequential(name='model_1')
+def model_1(dataset):    
+    model = Sequential(name='model_1')   
     
-    #model.add(Input(shape=(30,4)))
-    
-    
-    
+    # add dataset info fields into model
+    model.input_interval = dataset.input_interval
+    model.prediction_interval = dataset.prediction_interval
+    model.categories = dataset.categories 
+       
     # inception layer    
     layer_dict = {1:10, 3:10, 5:10, 7:10}    
     model.add(InceptionLayer(layer_dict, activation='relu', name='0_incept'))     
@@ -36,6 +37,7 @@ def model_1(category_count):
     model.add(Activation('relu', name='3_relu'))
     
     # output softmax
+    category_count = len(dataset.categories) + 1
     model.add(Dense(category_count, activation='softmax', name='4_softmax'))
     
     return model

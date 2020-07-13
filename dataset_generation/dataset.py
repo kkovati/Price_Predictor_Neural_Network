@@ -7,7 +7,9 @@ from .misc import LoadingBar
 
 class Dataset:  
     """
-    !!! not manager, wrapper class
+    Wrapper class for datasets:
+    Manages dataset generation, stores data and info, saves datasets to 
+    and loads datasets from .npz files
     """    
     def __init__(self, input_interval, prediction_interval, categories):
         self.input_interval = input_interval
@@ -18,7 +20,10 @@ class Dataset:
         
         
     def generate(self, train_datafile, test_datafile, train_set_size=-1, 
-                 test_set_size=-1):        
+                 test_set_size=-1):  
+        """
+        Generates training and test set from .csv files
+        """
         self.train_set = self.generate_set(train_datafile, train_set_size)        
         self.test_set = self.generate_set(test_datafile, test_set_size)
         self.generation_done = True
@@ -202,17 +207,18 @@ class Dataset:
         """
         Save train and test sets into a compressed .npz file
         """
-        print('Saving to', filename)
         self.is_generated()
+        print('Saving to', filename)
+        train_set_input, train_set_label = self.train_set
+        test_set_input, test_set_label = self.test_set
         np.savez_compressed(filename, 
-                            train_set=self.train_set, 
-                            test_set=self.test_set)
-                            #input_interval = np.array([1,2,4]))
-                            #input_interval = self.input_interval)
-# =============================================================================
-#                             prediction_interval = self.prediction_interval,
-#                             categories = self.categories)    
-# =============================================================================
+                            train_set_input=train_set_input,
+                            train_set_label=train_set_label,
+                            test_set_label=test_set_label,
+                            test_set_input=test_set_input,
+                            input_interval = self.input_interval,
+                            prediction_interval = self.prediction_interval,
+                            categories = self.categories)    
         
      
     @classmethod
@@ -226,10 +232,10 @@ class Dataset:
         
         dataset = Dataset(data['input_interval'], 
                           data['prediction_interval'], 
-                          data['categories'])
+                          data['categories'].tolist())
         
-        dataset.train_set = data['train_set']
-        dataset.test_set = data['test_set']
+        dataset.train_set = data['train_set_input'], data['train_set_label']
+        dataset.test_set = data['test_set_input'], data['test_set_label']
         
         dataset.generation_done = True
         

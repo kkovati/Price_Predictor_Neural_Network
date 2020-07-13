@@ -5,8 +5,10 @@ import numpy as np
 from .misc import LoadingBar
 
 
-class Dataset:    
-    
+class DatasetManager:  
+    """
+    !!!
+    """    
     def __init__(self, input_interval, prediction_interval, categories):
         self.input_interval = input_interval
         self.prediction_interval = prediction_interval
@@ -18,15 +20,12 @@ class Dataset:
         """
         Generates a dataset from a .csv file
         """        
-        csv_list = self.parse_csv(filename)
-        
-        input_set, label_set = self.extract_set(csv_list, set_size)        
-        
-        input_set = self.standardize_input(input_set)
-        
-        self.count_label_category(label_set)
-        
+        csv_list = self.parse_csv(filename)        
+        input_set, label_set = self.extract_set(csv_list, set_size)                
+        input_set = self.standardize_input(input_set)        
+        self.count_label_category(label_set)        
         return input_set, label_set
+
 
     def parse_csv(self, filename):
         """
@@ -175,7 +174,8 @@ class Dataset:
         return sum_label        
 
 
-    def save(self, filename, train_set, test_set):
+    @classmethod
+    def save(cls, filename, train_set, test_set):
         """
         Save train and test sets into a compressed .npz file
         """

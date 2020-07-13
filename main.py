@@ -1,5 +1,6 @@
-from dataset_generation import Dataset
-#from model import model_1, model_2
+from dataset_generation import DatasetManager
+from model import model_1, model_2
+from prediction_plotter import PredictionPlotter
 
 
 
@@ -8,16 +9,29 @@ This script ....
 """
 if __name__ == '__main__':
 
-    dataset_name = 'dataset_generation/datasets/IN60PRED3CAT[1,2.5,5].npz'
-
-    train_set, test_set = Dataset.load(dataset_name)
+    categories = [2] 
+    dataset_name = 'dataset_generation/datasets/IN60PRED2CAT[2].npz'
+    train_set, test_set = DatasetManager.load(dataset_name)
     
-    print(train_set[0].shape)
-    print(train_set[0][0][0])
-    print(test_set[0].shape)
-    print(test_set[0][0][0])
+    train_input_set, train_label_set = train_set 
+    test_input_set, test_label_set = test_set
+    
+    model = model_1(len(categories) + 1)
+    
+    model.compile(optimizer='adam', loss='categorical_crossentropy',
+                  metrics=['accuracy']) 
 
-# SHUFFLE training set
+    model.fit(train_input_set, train_label_set, batch_size=128, epochs=1,
+              shuffle=True)    
+    
+    print('Test results:')
+    loss = model.evaluate(test_input_set, test_label_set)
+    print(loss)
+    
+    filename='dataset_generation/data/crypto-markets_ONLY_BTC.csv'
+    PredictionPlotter(model, filename, categories, start=4, end=16)
+
+
 
 
 # =============================================================================

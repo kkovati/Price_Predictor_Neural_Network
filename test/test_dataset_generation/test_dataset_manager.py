@@ -2,15 +2,15 @@ import unittest
 import pytest
 import numpy as np
 
-from dataset_generation import Dataset
+from dataset_generation import DatasetManager
 
 
 class TestDataset(unittest.TestCase):
     
     def setUp(self):
-        self.dataset = Dataset(input_interval=6, 
-                               prediction_interval=2, 
-                               categories=[1,2.5,5])
+        self.data_man = DatasetManager(input_interval=6, 
+                                       prediction_interval=2, 
+                                       categories=[1,2.5,5])
         
         self.filename = '../test_data/test_crypto-markets_9_lines.csv'
         
@@ -18,7 +18,7 @@ class TestDataset(unittest.TestCase):
     def test_parse_csv(self):        
         print('\n---Run test_parse_csv---')
             
-        csv_list = self.dataset.parse_csv(self.filename)
+        csv_list = self.data_man.parse_csv(self.filename)
         
         assert float(csv_list[1][5]) == 134.44
         
@@ -28,8 +28,8 @@ class TestDataset(unittest.TestCase):
     def test_extract_set(self):
         print('\n---Run test_generate_training_set---')
         
-        csv_list = self.dataset.parse_csv(self.filename)        
-        training_set = self.dataset.extract_set(csv_list)
+        csv_list = self.data_man.parse_csv(self.filename)        
+        training_set = self.data_man.extract_set(csv_list)
 
         input_set, _ = training_set
         
@@ -43,9 +43,9 @@ class TestDataset(unittest.TestCase):
     def test_calculate_label(self):
         print('\n---Run test_calculate_label---')
         
-        csv_list = self.dataset.parse_csv(self.filename)
+        csv_list = self.data_man.parse_csv(self.filename)
         
-        training_set = self.dataset.extract_set(csv_list)        
+        training_set = self.data_man.extract_set(csv_list)        
         _, label_set = training_set
         
         # 115.91 / 97.75 == 1.18 -> 18% > 5% 
@@ -62,12 +62,12 @@ class TestDataset(unittest.TestCase):
     def test_standardize_input(self):
         print('\nRun test_standardize_input')
         
-        csv_list = self.dataset.parse_csv(self.filename)
+        csv_list = self.data_man.parse_csv(self.filename)
         
-        training_set = self.dataset.extract_set(csv_list)        
+        training_set = self.data_man.extract_set(csv_list)        
         input_set, _ = training_set
                 
-        standarized_input_set = self.dataset.standardize_input(input_set)
+        standarized_input_set = self.data_man.standardize_input(input_set)
         
         assert np.mean(standarized_input_set[0]) == pytest.approx(0)
         assert np.std(standarized_input_set[0]) == pytest.approx(1)
@@ -79,12 +79,12 @@ class TestDataset(unittest.TestCase):
     def test_count_label_category(self):
         print('\n---Run test_count_label_category---')
         
-        csv_list = self.dataset.parse_csv(self.filename)
+        csv_list = self.data_man.parse_csv(self.filename)
         
-        training_set = self.dataset.extract_set(csv_list)        
+        training_set = self.data_man.extract_set(csv_list)        
         _, label_set = training_set
         
-        sum_label = self.dataset.count_label_category(label_set)
+        sum_label = self.data_man.count_label_category(label_set)
         
         assert all(sum_label == [0,0,1,1])
         

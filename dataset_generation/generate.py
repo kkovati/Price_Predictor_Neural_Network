@@ -2,7 +2,7 @@ from dataset_generation import DatasetManager
 
 
 """
-This script is used to generate datasets.
+This script is used to generate datasets
 It creates a Dataset instance, generates training and test sets and
 saves them into 'dataset_generation/datasets' folder
 """

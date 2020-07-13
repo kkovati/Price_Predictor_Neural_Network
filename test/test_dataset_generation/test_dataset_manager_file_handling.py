@@ -1,27 +1,33 @@
 import unittest
 
-
-from dataset_generation import DatasetManager
+from dataset_generation import Dataset
 
 
 class TestDataset(unittest.TestCase):
     
     def setUp(self):
-        data_man = DatasetManager(input_interval=6, 
-                                  prediction_interval=2, 
-                                  categories=[1,2.5,5])
         
-        filename = '../test_data/test_crypto-markets_9_lines.csv'
+        self.input_interval = 6
+        self.prediction_interval = 2 
+        self.categories = [1,2.5,5]
         
-        self.in_set_0, self.lab_set_0 = data_man.generate_set(filename)
-        self.in_set_1, self.lab_set_1 = data_man.generate_set(filename)        
+        self.dataset = Dataset(self.input_interval, 
+                               self.prediction_interval, 
+                               self.categories)
         
-    def test_save(self):
-        print('\n---Run test_...---')
+        datafile = '../test_data/test_crypto-markets_9_lines.csv'        
+        self.dataset.generate(datafile, datafile)
+               
+        self.filename = 'test_dataset.npz'        
+        self.dataset.save(self.filename)        
         
+    
+    def test_load(self):
+        print('\n---Run test_load---')
         
+        dataset = Dataset.load(self.filename)
         
-        pass
+        dataset.get_test_set()
         
         
 if __name__ == '__main__':

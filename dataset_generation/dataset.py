@@ -5,16 +5,24 @@ import numpy as np
 from .misc import LoadingBar
 
 
-class DatasetManager:  
+class Dataset:  
     """
-    !!!
+    !!! not manager, wrapper class
     """    
     def __init__(self, input_interval, prediction_interval, categories):
         self.input_interval = input_interval
         self.prediction_interval = prediction_interval
         categories.sort(reverse=True)
-        self.categories = categories
+        self.categories = categories        
+        self.generation_done = False
         
+        
+    def generate(self, train_datafile, test_datafile, train_set_size=-1, 
+                 test_set_size=-1):        
+        self.train_set = self.generate_set(train_datafile, train_set_size)        
+        self.test_set = self.generate_set(test_datafile, test_set_size)
+        self.generation_done = True
+    
     
     def generate_set(self, filename, set_size=-1):
         """
@@ -174,17 +182,37 @@ class DatasetManager:
         return sum_label        
 
 
-    @classmethod
-    def save(cls, filename, train_set, test_set):
+    def is_generated(self):
+        if not self.generation_done:
+            raise Exception('Dataset is not generated. Class .generate()', 
+                            'method first.')
+            
+        
+    def get_train_set(self):
+        self.is_generated()
+        return self.train_set
+            
+    
+    def get_test_set(self):
+        self.is_generated()
+        return self.test_set
+            
+
+    def save(self, filename):
         """
         Save train and test sets into a compressed .npz file
         """
-        train_input_set, train_label_set = train_set
-        test_input_set, test_label_set = test_set
-        np.savez_compressed(filename, train_input_set=train_input_set, 
-                            train_label_set=train_label_set, 
-                            test_input_set=test_input_set, 
-                            test_label_set=test_label_set)    
+        print('Saving to', filename)
+        self.is_generated()
+        np.savez_compressed(filename, 
+                            train_set=self.train_set, 
+                            test_set=self.test_set)
+                            #input_interval = np.array([1,2,4]))
+                            #input_interval = self.input_interval)
+# =============================================================================
+#                             prediction_interval = self.prediction_interval,
+#                             categories = self.categories)    
+# =============================================================================
         
      
     @classmethod
@@ -193,8 +221,18 @@ class DatasetManager:
         Loads train and test sets from a compressed .npz file
         """
         print('Loading', filename)
+        
         data = np.load(filename)
-        return ((data['train_input_set'], data['train_label_set']), 
-                (data['test_input_set'], data['test_label_set']))
+        
+        dataset = Dataset(data['input_interval'], 
+                          data['prediction_interval'], 
+                          data['categories'])
+        
+        dataset.train_set = data['train_set']
+        dataset.test_set = data['test_set']
+        
+        dataset.generation_done = True
+        
+        return dataset
     
     

@@ -1,4 +1,4 @@
-from .dataset_manager import DatasetManager
+from .dataset import Dataset
 
 
 

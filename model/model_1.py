@@ -1,5 +1,5 @@
 from keras.layers import Activation, BatchNormalization, Conv1D, Dense
-from keras.layers import Flatten, Input, MaxPooling1D
+from keras.layers import Flatten, MaxPooling1D
 from keras.models import Sequential
 
 from model.inception_layer import InceptionLayer

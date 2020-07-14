@@ -5,9 +5,14 @@ from keras.models import Sequential
 from model.inception_layer import InceptionLayer
 
 
-def model_2(category_count):    
+def model_2(dataset):    
     model = Sequential(name='model_2')
      
+    # add dataset info fields into model
+    model.input_interval = dataset.input_interval
+    model.prediction_interval = dataset.prediction_interval
+    model.categories = dataset.categories
+    
     # inception layer 
     layer_dict = {1:6, 3:6, 5:6, 7:6, 9:6}    
     model.add(InceptionLayer(layer_dict, activation='relu', name='0_incept'))     

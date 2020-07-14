@@ -2,23 +2,26 @@ import numpy as np
 from plotly.graph_objects import Candlestick, Figure
 from plotly.offline import plot
 
-from dataset_generation import Dataset
 
 class PredictionPlotter:
-    
-    
+    """
+    Makes predictions of a model based on the given interval of a 
+    price history .csv file sequentially
+    Plots the prices in a candlestick chart and visualize the predictions
+    on this chart    
+    """    
     def __init__(self, model, filename, start=0, end=-1):
-        
+        """
+        model: keras model
+        filename: path of .csv file
+        """
         self.model = model
                 
         analyzed_interval, predictions = self.make_predictions(model, filename, 
-                                                               start, end)    
-        
-        figure = self.init_figure(analyzed_interval, predictions, model)
-        
+                                                               start, end)        
+        figure = self.init_figure(analyzed_interval, predictions, model)        
         self.visualize_predictions(figure, analyzed_interval, predictions, 
-                                   model)
-       
+                                   model)       
         plot(figure)        
 
     
@@ -73,8 +76,6 @@ class PredictionPlotter:
     # https://plotly.com/python/candlestick-charts/
     # https://plotly.com/python/shapes/
     
-        print(analyzed_interval[:,0])
-    
         candlestick = Candlestick(x=analyzed_interval[:,0], 
                                   open=analyzed_interval[:,1], 
                                   high=analyzed_interval[:,2], 
@@ -83,8 +84,12 @@ class PredictionPlotter:
         
         figure = Figure(data=[candlestick])
         
-        title = ('Predictions for the next ' + str(model.prediction_interval) + 
-                 ' days')
+        model.categories.sort()
+        steps = ', '.join(['+' + str(c) + '%' for c in model.categories])
+        title = ('Predictions of ' + model.name + ' for the next ' + 
+                 str(model.prediction_interval) + 
+                 ' days based on the previous ' + str(model.input_interval) + 
+                 ' days. Steps: 0%, ' + steps)
         figure.update_layout(title=title, yaxis_title='Price')
         
         return figure        
@@ -94,8 +99,6 @@ class PredictionPlotter:
                               model):
         
         prediction_interval = model.prediction_interval
-        categories = model.categories
-        categories.sort()
         
         for i, prediction in enumerate(predictions):            
             # do not draw those predictions which cannot be verified
@@ -107,8 +110,8 @@ class PredictionPlotter:
                 text = '< 0%' 
                 color = 'Red'
             else:                
-                ratio = categories[prediction-1] / 100 + 1
-                text = '> ' + str(categories[prediction-1]) + '%'
+                ratio = model.categories[prediction-1] / 100 + 1
+                text = '> ' + str(model.categories[prediction-1]) + '%'
                 color = 'Green'
             
             # vertical line

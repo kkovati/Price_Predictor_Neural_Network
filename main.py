@@ -9,7 +9,7 @@ This script ....
 """
 if __name__ == '__main__':
 
-    dataset_name = 'dataset_generation/datasets_npz/IN60PRED2CAT[2].npz'
+    dataset_name = 'dataset_generation/datasets_npz/IN60PRED2CAT[1,2,3].npz'
     dataset = Dataset.load(dataset_name)
     
     train_input_set, train_label_set = dataset.get_train_set()
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     print(loss)
     
     filename='dataset_generation/data_csv/crypto-markets_ONLY_BTC.csv'
-    PredictionPlotter(model, filename, start=-15, end=-1)
+    PredictionPlotter(model, filename, start=-200, end=-170)
 
 
 

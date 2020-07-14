@@ -1,10 +1,10 @@
 from keras.layers import Activation, BatchNormalization, Conv1D, Concatenate
-from keras.layers import Layer
+from keras.layers import GRU, Layer
 
 
-class InceptionLayer(Layer):
+class ConvGRULayer(Layer):
     
-    def __init__(self, kernel_dict, activation, name):        
+    def __init__(self, kernel_dict, gru_size, activation, name):        
         super().__init__()         
         self.layers = []        
         
@@ -15,7 +15,14 @@ class InceptionLayer(Layer):
                            activation=None,
                            use_bias=False,
                            name=name+'_conv_'+str(kernel_size))            
-            self.layers.append(layer)        
+            self.layers.append(layer)   
+            
+        layer = GRU(units=gru_size, 
+                    activation=None,
+                    use_bias=False,
+                    return_sequences=True,
+                    name=name+'_gru_'+str(gru_size))
+        self.layers.append(layer) 
         
         self.concat = Concatenate(axis=2, name=name+'_concat')        
         self.batch_norm = BatchNormalization(axis=2, name=name+'_norm')        

@@ -108,8 +108,8 @@ class PredictionPlotter:
                 return
             
             if prediction == 0:
-                ratio = 1
-                text = '< 0%' 
+                ratio = model.categories[0] / 100 + 1
+                text = '< ' + str(model.categories[0]) + '%' 
                 color = 'Red'
             else:                
                 ratio = model.categories[prediction-1] / 100 + 1

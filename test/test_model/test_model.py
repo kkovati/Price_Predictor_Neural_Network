@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     train_input_set, train_label_set = dataset.get_train_set()
     
-    model = predictor.model_5(dataset)     
+    model = predictor.model_6(dataset)     
     
     model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy']) 
@@ -19,3 +19,16 @@ if __name__ == '__main__':
     
     model.summary()
     
+    
+
+    from keras import backend as K
+    import numpy as np
+    
+    trainable_count = int(
+        np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
+    non_trainable_count = int(
+        np.sum([K.count_params(p) for p in set(model.non_trainable_weights)]))
+    
+    print('Total params: {:,}'.format(trainable_count + non_trainable_count))
+    print('Trainable params: {:,}'.format(trainable_count))
+    print('Non-trainable params: {:,}'.format(non_trainable_count))

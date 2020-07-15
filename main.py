@@ -1,5 +1,5 @@
 from dataset_generation import Dataset
-from model import model_1, model_2
+from predictor import model_1, model_2
 from prediction_plotter import PredictionPlotter
 
 

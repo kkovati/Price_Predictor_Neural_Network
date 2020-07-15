@@ -12,10 +12,24 @@ class Dataset:
     and loads datasets from .npz files
     """    
     def __init__(self, input_interval, prediction_interval, categories):
+        """
+        input_interval : int 
+            number of previous days the model will use during making the 
+            prediction 
+        prediction_interval : int 
+            number of future days the prediction refers to 
+        categories : list of integers
+            the steps of the predicted price increase
+            e.g.: [1,2,3] will generate labels of 4 different categories:
+                predicted price increase is: - less than 1% 
+                                             - between 1% and 2%
+                                             - between 2% and 3%
+                                             - more tham 3%
+        """
         self.input_interval = input_interval
         self.prediction_interval = prediction_interval
-        categories.sort(reverse=True)
-        self.categories = categories        
+        self.categories = deepcopy(categories)
+        self.categories.sort(reverse=True)
         self.generation_done = False
         
         

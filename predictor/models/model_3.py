@@ -3,7 +3,7 @@ from keras.layers import Flatten, MaxPooling1D
 from keras.models import Sequential
 
 from predictor import ConvGRULayer
-from predictor import add_dataset_info
+from .misc import add_dataset_info
 
 
 def model_3(dataset):    

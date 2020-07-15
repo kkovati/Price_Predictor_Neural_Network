@@ -1,13 +1,13 @@
 from keras.layers import Activation, BatchNormalization, Conv1D, Dense
-from keras.layers import Flatten, MaxPooling1D
+from keras.layers import Flatten, GRU, MaxPooling1D
 from keras.models import Sequential
 
 from predictor import ConvGRULayer
 from .misc import add_dataset_info
 
 
-def model_4(dataset):    
-    model = Sequential(name='model_4')
+def model_6(dataset):    
+    model = Sequential(name='model_6')
     add_dataset_info(model, dataset)
     
     # conv_gru layer 
@@ -30,9 +30,9 @@ def model_4(dataset):
     model.add(BatchNormalization(name='2_norm'))    
     model.add(Activation('relu', name='2_relu'))    
     
-    # dense
-    model.add(Flatten(name='3_flat'))    
-    model.add(Dense(20, use_bias=False, name='3_dense')) 
+    # GRU (returns only last last output)
+    model.add(GRU(units=10, activation=None, use_bias=False, 
+                  return_sequences=False, name='3_gru'))
     model.add(BatchNormalization(name='3_norm'))    
     model.add(Activation('relu', name='3_relu'))
     

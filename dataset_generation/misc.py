@@ -2,7 +2,9 @@ import sys
 
 
 class LoadingBar:
-    
+    """
+    Prints a loading bar into console
+    """    
     def __init__(self, size, message):
         self.size = size
         self.message = message

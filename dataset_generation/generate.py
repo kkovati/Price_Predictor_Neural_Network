@@ -4,13 +4,14 @@ from dataset_generation import Dataset
 """
 This script is used to generate datasets
 It creates a Dataset instance, generates training and test sets and
-saves them into 'dataset_generation/datasets' folder
+saves them into 'dataset_generation/datasets_npz' folder
+Warning: .npz files can easily exceed 1GB
 """
 if __name__ == '__main__':
     
     input_interval=60
-    prediction_interval=2
-    categories=[1,2,3]   
+    prediction_interval=1
+    categories=[1,5]   
     
     train_data = '../dataset_generation/data_csv/crypto-markets_NO_BTC.csv'
     test_data = '../dataset_generation/data_csv/crypto-markets_ONLY_BTC.csv'

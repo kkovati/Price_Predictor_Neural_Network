@@ -3,7 +3,7 @@ from keras.layers import Flatten, GRU
 from keras.models import Sequential
 
 from predictor import InceptionLayer
-from predictor import add_dataset_info
+from .misc import add_dataset_info
 
 
 def model_5(dataset):    

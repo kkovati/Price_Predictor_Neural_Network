@@ -2,7 +2,7 @@ import unittest
 from keras.layers import Input
 from keras.models import Model
 
-from model import InceptionLayer
+from predictor import InceptionLayer
 
 
 class TestInceptionLayer(unittest.TestCase):

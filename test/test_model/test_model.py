@@ -1,5 +1,5 @@
 from dataset_generation import Dataset
-import model
+import predictor
 
 
 if __name__ == '__main__':
@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     train_input_set, train_label_set = dataset.get_train_set()
     
-    model = model.model_2(dataset)     
+    model = predictor.model_5(dataset)     
     
     model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy']) 

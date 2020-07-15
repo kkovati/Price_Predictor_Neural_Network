@@ -2,7 +2,7 @@ import unittest
 from keras.layers import Input
 from keras.models import Model
 
-from model import ConvGRULayer
+from predictor import ConvGRULayer
 
 
 class TestConvGRULayer(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestConvGRULayer(unittest.TestCase):
         
         # input interval must remain the same
         assert X.shape[1] == 30
-        # no. of channels add up: 42 == 12 + 14 + 16 + 18
+        # no. of channels add up: 60 == 12 + 14 + 16 + 18
         assert X.shape[2] == 60
         
         model = Model(inputs=X_input, outputs=X, name='TestModel')    

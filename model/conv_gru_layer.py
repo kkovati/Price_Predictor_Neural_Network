@@ -1,8 +1,11 @@
 from keras.layers import Activation, BatchNormalization, Conv1D, Concatenate
 from keras.layers import GRU, Layer
 
+from model.add_dataset_info import add_dataset_info
+
 
 class ConvGRULayer(Layer):
+    
     
     def __init__(self, kernel_dict, gru_size, activation, name):        
         super().__init__()         

@@ -20,7 +20,6 @@ if __name__ == '__main__':
     
     filename='../../dataset_generation/data_csv/crypto-markets_ONLY_BTC.csv'
     PredictionPlotter(model, filename, start=4, end=16)
-    
-    
+
     
     

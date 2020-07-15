@@ -2,21 +2,25 @@ from keras.layers import Activation, BatchNormalization, Conv1D, Dense
 from keras.layers import Flatten, MaxPooling1D
 from keras.models import Sequential
 
-from model.inception_layer import InceptionLayer
+from model.conv_gru_layer import ConvGRULayer
 from model.add_dataset_info import add_dataset_info
 
 
-def model_2(dataset):    
-    model = Sequential(name='model_2')
+def model_4(dataset):    
+    model = Sequential(name='model_4')
     add_dataset_info(model, dataset)
     
-    # inception layer 
-    kernel_dict = {1:6, 3:6, 5:6, 7:6, 9:6}    
-    model.add(InceptionLayer(kernel_dict, activation='relu', name='0_incept'))     
+    # conv_gru layer 
+    kernel_dict = {1:8, 3:8, 5:8, 7:8, 9:8}    
+    gru_size = 10
+    model.add(ConvGRULayer(kernel_dict, gru_size, activation='relu', 
+                           name='0_conv_gru'))
     
-    # inception layer 
-    layer_dict = {1:4, 3:4, 5:4, 7:4, 9:4}    
-    model.add(InceptionLayer(layer_dict, activation='relu', name='1_incept'))     
+    # conv_gru layer 
+    kernel_dict = {1:6, 3:6, 5:6, 7:6, 9:6}    
+    gru_size = 8
+    model.add(ConvGRULayer(kernel_dict, gru_size, activation='relu', 
+                           name='1_conv_gru'))
     model.add(MaxPooling1D(pool_size=2, strides=2, padding='valid', 
                            name='1_max'))
     
@@ -43,3 +47,6 @@ def model_2(dataset):
     
     return model
     
+
+
+

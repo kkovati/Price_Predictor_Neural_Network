@@ -2,6 +2,8 @@ import numpy as np
 from plotly.graph_objects import Candlestick, Figure
 from plotly.offline import plot
 
+from dataset_generation import Dataset
+
 
 class PredictionPlotter:
     """

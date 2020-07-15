@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     train_input_set, train_label_set = dataset.get_train_set()
     
-    model = model.model_3(dataset)     
+    model = model.model_2(dataset)     
     
     model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy']) 

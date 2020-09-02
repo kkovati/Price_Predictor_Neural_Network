@@ -1,5 +1,5 @@
 from dataset_generation import Dataset
-from predictor import model_1, model_2
+from predictor import model_1
 from prediction_plotter import PredictionPlotter
 
 
@@ -10,6 +10,7 @@ This script ....
 if __name__ == '__main__':
 
     dataset_name = 'dataset_generation/datasets_npz/IN60PRED2CAT[1,2,3].npz'
+    #dataset_name = 'dataset_generation/datasets_npz/test_dataset_IN3PRED2CAT[1,2,3].npz'
     dataset = Dataset.load(dataset_name)
     
     train_input_set, train_label_set = dataset.get_train_set()
@@ -20,7 +21,7 @@ if __name__ == '__main__':
     model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy']) 
 
-    model.fit(train_input_set, train_label_set, batch_size=128, epochs=1,
+    model.fit(train_input_set, train_label_set, batch_size=128, epochs=3,
               shuffle=True)    
     
     print('Test results:')

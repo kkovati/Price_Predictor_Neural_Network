@@ -14,8 +14,9 @@ class PredictionPlotter:
     """    
     def __init__(self, model, filename, start=0, end=-1):
         """
-        model: keras model
-        filename: path of .csv file
+        model: keras.Model
+        filename: str - path of .csv file
+        start, end: int - indexes of the interval the predictions made 
         """
         self.model = model
                 
@@ -28,7 +29,17 @@ class PredictionPlotter:
 
     
     def make_predictions(self, model, filename, start=0, end=-1):
-        
+        """
+        Slices the appropriate interval from the .csv file, transforms it
+        appropriately, and inputs it to the model, to make the predictions
+        Parameters:
+        model: keras.Model
+        filename: str - path of .csv file
+        start, end: int - indexes of the interval the predictions made 
+        Returns:
+        analyzed_interval : np.ndarray - dates and prices for th
+        predictions : np.ndarray - hardmax indices of model's predictions 
+        """
         dm = Dataset(0,0,[]) # dummy values for init
         csv_list = dm.parse_csv(filename) 
         
@@ -73,11 +84,16 @@ class PredictionPlotter:
         
         
     def init_figure(self, analyzed_interval, predictions, model):
-    
-    # https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html#plotly.graph_objects.Figure.update_layout
-    # https://plotly.com/python/candlestick-charts/
-    # https://plotly.com/python/shapes/
-    
+        """
+        Initializes the plotly Figure and puts predictions argument 
+        as candlestick data into the chart
+        Parameters:
+        analyzed_interval : np.ndarray - dates and prices 
+        predictions : np.ndarray - hardmax indices of model's predictions 
+        model : keras.Model
+        Returns:
+        figure : plotly.Figure 
+        """    
         candlestick = Candlestick(x=analyzed_interval[:,0], 
                                   open=analyzed_interval[:,1], 
                                   high=analyzed_interval[:,2], 
@@ -99,7 +115,15 @@ class PredictionPlotter:
         
     def visualize_predictions(self, figure, analyzed_interval, predictions, 
                               model):
-        
+        """
+        Puts indicator lines and markers into the candlestick chart based on
+        the model's predictions
+        Parameters:
+        figure : plotly.Figure 
+        analyzed_interval : np.ndarray - dates and prices 
+        predictions : np.ndarray - hardmax indices of model's predictions
+        model : keras.Model
+        """        
         prediction_interval = model.prediction_interval
         
         for i, prediction in enumerate(predictions):            

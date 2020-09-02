@@ -10,25 +10,24 @@ if __name__ == '__main__':
 
     train_input_set, train_label_set = dataset.get_train_set()
     
-    model = predictor.model_6(dataset)     
+    model = predictor.model_1(dataset)     
     
     model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy']) 
 
     model.fit(train_input_set, train_label_set, batch_size=256, epochs=1)
     
-    model.summary()
+    model.summary()    
+    
+    import keras 
+    keras.models.save_model(model, 'temp.h5')
+    print('-----------------------------------')
     
     
-
-    from keras import backend as K
-    import numpy as np
+    model_loaded = keras.models.load_model('temp.h5')
     
-    trainable_count = int(
-        np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
-    non_trainable_count = int(
-        np.sum([K.count_params(p) for p in set(model.non_trainable_weights)]))
+    model_loaded.summary()
     
-    print('Total params: {:,}'.format(trainable_count + non_trainable_count))
-    print('Trainable params: {:,}'.format(trainable_count))
-    print('Non-trainable params: {:,}'.format(non_trainable_count))
+    model_loaded.fit(train_input_set, train_label_set, batch_size=256, epochs=1)
+    
+    

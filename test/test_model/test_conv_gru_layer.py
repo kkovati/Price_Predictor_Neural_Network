@@ -13,7 +13,7 @@ class TestConvGRULayer(unittest.TestCase):
         gru_size = 18
         
         conv_gru_layer = ConvGRULayer(kernel_dict, gru_size, activation='relu', 
-                                    name='test_layer')
+                                      name='test_layer')
         
         X_input = Input((30, 4))    
         print('Input shape:', X_input.shape)

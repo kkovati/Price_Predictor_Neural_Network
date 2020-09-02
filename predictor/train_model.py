@@ -11,20 +11,20 @@ tests the model then saves it into the 'predictor/trained_models_h5' folder
 """
 if __name__ == '__main__':
     
-    #dataset_name = 'dataset_generation/datasets_npz/IN60PRED2CAT[1,2,3].npz'
+    #dataset_name = '../dataset_generation/datasets_npz/IN60PRED1CAT[1,5].npz'
     dataset_name = '../dataset_generation/datasets_npz/test_dataset_IN3PRED2CAT[1,2,3].npz'
     dataset = Dataset.load(dataset_name)
     
     train_input_set, train_label_set = dataset.get_train_set()
     test_input_set, test_label_set =  dataset.get_test_set()
     
-    models = [model_1, model_2]#, model_3, model_4, model_5, model_6]
+    models = [model_4]
     
     for model_generator in models:    
         model = model_generator(dataset)
         
         model.compile(optimizer='adam', loss='categorical_crossentropy',
-                      metrics=['accuracy']) 
+                      metrics=['categorical_accuracy']) 
         
         print('---------------------------------------------')
         print('Training of', model.name)
@@ -44,4 +44,3 @@ if __name__ == '__main__':
         print('Save', path + model_name)
         model.save(path + model_name)
     
-   

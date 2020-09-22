@@ -11,7 +11,7 @@ tests the model then saves it into the 'predictor/trained_models_h5' folder
 """
 if __name__ == '__main__':
     
-    #dataset_name = '../dataset_generation/datasets_npz/IN60PRED1CAT[1,5].npz'
+    # dataset_name = '../dataset_generation/datasets_npz/IN60PRED1CAT[1,5].npz'
     dataset_name = '../dataset_generation/datasets_npz/test_dataset_IN3PRED2CAT[1,2,3].npz'
     dataset = Dataset.load(dataset_name)
     

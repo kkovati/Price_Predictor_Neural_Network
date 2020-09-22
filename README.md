@@ -13,7 +13,7 @@ IDE: Spyder 4.1.2<br/>
 ### Model
 
 Multiple models are trained and tested concurrently to find an optimal model structure for the problem.
-The models are using special Inception and ConvGRU layers described below.
+The models are using special Inception and ConvGRU layers described below.<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/models
 
 **Inception layer**
@@ -23,7 +23,7 @@ In this implementation the inception layer built up multiple different kernel si
 The different sized kernels find different size patterns in the one dimensional time series data.
 (This time series can have multiple channels, e.g. open, close, low and high prices)
 
-Source code:
+Source code:<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/layers/inception_layer.py
 
 **ConvGRU layer**
@@ -33,7 +33,7 @@ concatenated together.
 A GRU layer processes the data time dependent, in contrast to the convolutional layer,
 so the two different type of layers finds different type of patterns.
 
-Source code:
+Source code:<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/layers/conv_gru_layer.py
 
 ### Dataset
@@ -48,7 +48,7 @@ The dataset management is done in a single class which is responsible for
 reading, preprocessing and transforming the raw data.
 Also it can save and load the dataset in a compressed .npz format.
 
-Source code:
+Source code:<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/dataset_generation/dataset.py 
 
 ### Prediction results

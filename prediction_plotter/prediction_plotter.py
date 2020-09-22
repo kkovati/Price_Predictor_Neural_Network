@@ -107,7 +107,7 @@ class PredictionPlotter:
         title = ('Predictions of ' + model.name + ' for the next ' + 
                  str(model.prediction_interval) + 
                  ' days based on the previous ' + str(model.input_interval) + 
-                 ' days. Steps: 0%, ' + steps)
+                 ' days. Steps: ' + steps)
         figure.update_layout(title=title, yaxis_title='Price')
         
         return figure        

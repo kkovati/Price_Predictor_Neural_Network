@@ -1,5 +1,5 @@
 from dataset_generation import Dataset
-from predictor import model_1, model_2
+from predictor import model_1, model_2, model_3
 from prediction_plotter import PredictionPlotter
 
 
@@ -16,12 +16,12 @@ if __name__ == '__main__':
     train_input_set, train_label_set = dataset.get_train_set()
     test_input_set, test_label_set =  dataset.get_test_set()
     
-    model = model_2(dataset)
+    model = model_1(dataset)
     
     model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy']) 
 
-    model.fit(train_input_set, train_label_set, batch_size=128, epochs=3,
+    model.fit(train_input_set, train_label_set, batch_size=128, epochs=1,
               shuffle=True)    
     
     print('Test results:')
@@ -29,6 +29,6 @@ if __name__ == '__main__':
     print(loss)
     
     filename='dataset_generation/data_csv/crypto-markets_ONLY_BTC.csv'
-    PredictionPlotter(model, filename, start=-160, end=-130)
+    PredictionPlotter(model, filename, start=-140, end=-100)
 
 

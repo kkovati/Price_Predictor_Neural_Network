@@ -5,10 +5,9 @@ combination of layers used in CNNs (Convolutional Neural Network) and RNNs (Recu
 
 **This project is under development!**
 
-Project done in Python 3.7<br/> 
+Project developed in Python 3.7<br/> 
 Deep learning: Keras 2.3.1<br/>
-Prediction visualization: Plotly 4.8.2<br/>
-IDE: Spyder 4.1.2<br/>
+Visualization: Plotly 4.8.2<br/>
 
 ### Model
 

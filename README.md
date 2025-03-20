@@ -17,8 +17,7 @@ https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/
 An inception layer is made up multiple different layers concatenated together. 
 In this implementation the inception layer built up multiple different kernel size 1D convolutional layers.
 The different sized kernels find different size patterns in the one dimensional time series data.
-(This time series can have multiple channels, e.g. open, close, low and high prices)
-
+(This time series can have multiple channels, e.g. open, close, low and high prices)<br/>
 Source:<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/layers/inception_layer.py
 
@@ -27,8 +26,7 @@ https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/
 A ConvGRU layer is a combination of the previously described Inception layer and a GRU (Gated recurrent unit) layer
 concatenated together.
 A GRU layer processes the data time dependent, in contrast to the convolutional layer,
-so the two different type of layers finds different type of patterns.
-
+so the two different type of layers finds different type of patterns.<br/>
 Source:<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/predictor/layers/conv_gru_layer.py
 
@@ -42,8 +40,7 @@ for more than 2000 cryptocurrencies.
 
 The dataset management is done in a single class which is responsible for 
 reading, preprocessing and transforming the raw data.
-Also it can save and load the dataset in a compressed .npz format.
-
+Also it can save and load the dataset in a compressed .npz format.<br/>
 Source:<br/>
 https://github.com/kkovati/Price_Predictor_Neural_Network/blob/master/dataset_generation/dataset.py 
 
